@@ -4,26 +4,34 @@ import EasyCrop from './EasyCrop';
 import { useState } from 'react';
 
 function App() {
-  const [image, setImage] = useState(null);
+  const [video, setVideo] = useState(null);
 
-  const handleImageUpload = async (e) => {
-    setImage(URL.createObjectURL(e.target.files[0]))
+  const handleVideoUpload = async (e) => {
+    setVideo(URL.createObjectURL(e.target.files[0]))
   };
+// function App() {
+//   const [image, setImage] = useState(null);
+
+//   const handleImageUpload = async (e) => {
+//     setImage(URL.createObjectURL(e.target.files[0]))
+//   };
 
   return (
     <div className="App">
       <header className='App-header'>
         <label className='_coverImage-holder'>
-          Upload Image
+          {/* Upload Image */}
+          Upload Video
           <input
             type='file'
             name='cover'
-            onChange={handleImageUpload}
-            accept='img/*'
+            onChange={handleVideoUpload}
+            accept='video/*'
             style={{ display: 'none' }}
           />
         </label>
-        <EasyCrop image={image} />
+        {/* <EasyCrop image={image} /> */}
+        <EasyCrop video={video} />
       </header>
     </div>
   );

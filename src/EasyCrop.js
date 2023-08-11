@@ -1,60 +1,78 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useState, useRef } from "react";
 import Cropper from 'react-easy-crop';
 import { Slider } from "@material-ui/core";
 import getCroppedImg from "./Crop";
 
-const EasyCrop = ({ image }) => {
+const EasyCrop = ({
+    // image
+    video
+     }) => {
  const [crop, setCrop] = useState({ x: 0, y: 0 });
  const [zoom, setZoom] = useState(1);
  const [rotation, setRotation] = useState(0);
  const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
- const [croppedImage, setCroppedImage] = useState(null);
+//  const [croppedImage, setCroppedImage] = useState(null);
+ const [croppedVideo, setCroppedVideo] = useState(null);
+ const cropperRef = useRef(null);
 
  const onCropComplete = useCallback((croppedArea, croppedAreaPixels) => {
     setCroppedAreaPixels(croppedAreaPixels);
  }, []);
 
- const showCroppedImage = useCallback(async () => {
+ // showCroppedImage
+ const showCroppedVideo = useCallback(async () => {
     try {
-        const croppedImage = await getCroppedImg(
-            image,
+        const croppedVideo = await getCroppedImg(
+            // image,
+            video,
             croppedAreaPixels,
             rotation
         );
-        console.log('donee', {croppedImage});
-        setCroppedImage(croppedImage);
+        // console.log('donee', {croppedImage});
+        console.log('donee', {croppedVideo});
+        // setCroppedImage(croppedImage);
+        setCroppedVideo(croppedVideo);
     } catch (e) {
         console.error(e);
     }
- }, [croppedAreaPixels, rotation, image]);
+ }, [croppedAreaPixels, rotation, video /*image*/]);
 
  const onClose = useCallback(() => {
-    setCroppedImage(null);
+    // setCroppedImage(null);
+    setCroppedVideo(null);
  }, []);
+
+ const onCrop = () => {
+    const imageElement = cropperRef?.current;
+    const cropper = imageElement?.cropper;
+    setCroppedVideo(cropper.getCroppedCanvas().toDataURL());
+ }
 
   return (
     <div>
         <button style={{
-            display: image === null || croppedImage !== null ? "none" : "block",
+            display: video === null || croppedVideo !== null ? "none" : "block",
         }}
-        onClick={showCroppedImage}>
+        onClick={showCroppedVideo}>
             crop
         </button>
         <div className="container"
         style={{
-            display: image === null || croppedImage !== null ? "none" : "block",
+            display: video === null || croppedVideo !== null ? "none" : "block",
         }}
         >
         <div className="crop-container">
             <Cropper
-                image="https://cdn.pixabay.com/photo/2016/07/07/16/46/dice-1502706__340.jpg"
+                // image="https://cdn.pixabay.com/photo/2016/07/07/16/46/dice-1502706__340.jpg"
+                // video="https://res.cloudinary.com/demo/video/upload/w_400,h_400,c_crop/dog.mp4"
+                video={video}
                 crop={crop}
                 zoom={zoom}
                 rotation={rotation}
                 zoomSpeed={4}
                 maxZoom={3}
                 zoomWithScroll={true}
-                showGrid={true}
+                showGrid={false}
                 aspect={3 / 3}
                 onZoomChange={setZoom}
                 onCropChange={setCrop}
@@ -90,10 +108,13 @@ const EasyCrop = ({ image }) => {
             </div>
         </div>
         <div className="cropped-image-container">
-            {croppedImage && (
-                <img className="cropped-image" src={croppedImage} alt="cropped" />
+            {croppedVideo && (
+                <video className="cropped-image" src={croppedVideo} alt="cropped" />
+            // {croppedImage && (
+            //     <img className="cropped-image" src={croppedImage} alt="cropped" />
             )}
-            {croppedImage && <button onClick={onClose}>close</button>}
+            {croppedVideo && <button onClick={onClose}>close</button>}
+            {/* {croppedImage && <button onClick={onClose}>close</button>} */}
         </div>
     </div>
   )
